@@ -1,0 +1,110 @@
+.create-course-page {
+  padding: 40px;
+  background-color: #ffffff;
+  min-height: 100vh;
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #4c1d95; // Deep Purple
+    margin-bottom: 30px;
+  }
+}
+
+.form-container {
+  max-width: 900px;
+  background: #ffffff;
+  border: 2px solid #f5f3ff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.course-form {
+  .form-group {
+    margin-bottom: 24px;
+    
+    label {
+      display: block;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #f3f4f6;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+
+      &:focus {
+        border-color: #7e22ce;
+      }
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .file-input {
+    font-size: 0.875rem;
+    color: #6b7280;
+    
+    &::file-selector-button {
+      margin-right: 16px;
+      padding: 10px 20px;
+      border-radius: 99px;
+      border: 0;
+      background-color: #f5f3ff;
+      color: #7e22ce;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: #ede9fe;
+      }
+    }
+  }
+
+  .btn-submit {
+    background-color: #7e22ce;
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(126, 34, 206, 0.2);
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #6b21a8;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Responsive layout
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .create-course-page {
+    padding: 20px;
+  }
+}

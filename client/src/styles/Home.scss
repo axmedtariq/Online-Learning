@@ -1,0 +1,175 @@
+// Brand Colors
+$purple-700: #7e22ce;
+$purple-800: #6b21a8;
+$purple-900: #4c1d95;
+$white: #ffffff;
+$gray-50: #f9fafb;
+$gray-200: #e5e7eb;
+$gray-900: #111827;
+
+.home-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: $white;
+}
+
+// Navbar
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+  border-bottom: 1px solid $gray-200;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $purple-700;
+  }
+
+  .nav-links a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 500;
+    &:hover { color: $purple-700; }
+  }
+
+  .auth-buttons {
+    button {
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 1rem;
+    }
+    .btn-login {
+      color: $purple-700;
+      border: 1px solid $purple-700;
+      background: transparent;
+      &:hover { background: #f5f3ff; }
+    }
+    .btn-signup {
+      color: white;
+      background: $purple-700;
+      border: none;
+      &:hover { background: $purple-800; }
+    }
+  }
+}
+
+// Hero
+.hero {
+  background: $purple-900;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  padding: 0 3rem;
+  position: relative;
+  overflow: hidden;
+
+  .hero-content {
+    max-width: 600px;
+    color: white;
+    z-index: 10;
+
+    h1 { font-size: 3rem; margin-bottom: 1rem; }
+    p { font-size: 1.25rem; margin-bottom: 2rem; color: #ddd6fe; }
+
+    .search-bar {
+      display: flex;
+      background: white;
+      border-radius: 4px;
+      overflow: hidden;
+      input {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        outline: none;
+      }
+      button {
+        background: $purple-700;
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        cursor: pointer;
+        &:hover { background: $purple-800; }
+      }
+    }
+  }
+
+  .decorative-circle {
+    position: absolute;
+    right: 5%;
+    top: 10%;
+    width: 250px;
+    height: 250px;
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 50%;
+  }
+}
+
+// Course Grid
+.section {
+  padding: 3rem;
+  .section-title { font-size: 1.8rem; margin-bottom: 2rem; }
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.course-card {
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  &:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+  .course-image-placeholder {
+    height: 160px;
+    background: #f3e8ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c084fc;
+    font-weight: bold;
+  }
+
+  .course-details {
+    padding: 1rem;
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .instructor { color: #6b7280; font-size: 0.9rem; }
+    .price { font-size: 1.25rem; font-weight: bold; margin-top: 0.5rem; }
+  }
+}
+
+// Footer
+.footer {
+  background: $gray-900;
+  color: white;
+  padding: 3rem;
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 2rem;
+    ul { list-style: none; padding: 0; 
+      li { color: #d1d5db; margin-bottom: 0.5rem; cursor: pointer; &:hover { text-decoration: underline; } }
+    }
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2rem;
+    .footer-logo { color: #a855f7; font-weight: bold; font-size: 1.2rem; }
+    .copyright { color: #9ca3af; font-size: 0.8rem; }
+  }
+}

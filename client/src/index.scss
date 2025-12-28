@@ -1,0 +1,53 @@
+// Variables for your brand
+$purple-main: #6b21a8;
+$purple-dark: #4c1d95;
+$white: #ffffff;
+$gray-light: #f9fafb;
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: $gray-light;
+}
+
+// Navbar Styles
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: $white;
+  border-bottom: 1px solid #ddd;
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $purple-main;
+  }
+  
+  .nav-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    &:hover { color: $purple-main; }
+  }
+}
+
+// Hero Section
+.hero {
+  background: $purple-dark;
+  color: $white;
+  padding: 60px 40px;
+  text-align: left;
+  
+  h1 { font-size: 3rem; margin-bottom: 1rem; }
+  p { font-size: 1.2rem; opacity: 0.9; }
+}
+
+// Course Grid
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 40px;
+}

@@ -1,0 +1,86 @@
+.admin-container {
+  padding: 40px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #4c1d95; // Deep Purple
+  margin-bottom: 30px;
+  border-bottom: 2px solid #f3e8ff;
+  padding-bottom: 15px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  thead {
+    background-color: #7e22ce; // Purple Header
+    color: white;
+    th { padding: 16px; font-weight: 600; }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #f9fafb;
+      transition: background 0.2s;
+      &:hover { background-color: #f5f3ff; }
+    }
+    td { padding: 16px; color: #374151; }
+  }
+}
+
+// Utility Classes
+.font-bold { font-weight: 700; color: #111827; }
+.text-muted { color: #6b7280; }
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  &.badge-blue { background-color: #dbeafe; color: #1e40af; }
+  &.badge-gray { background-color: #f3f4f6; color: #374151; }
+}
+
+.status-approved { color: #16a34a; font-weight: 700; }
+.status-pending { color: #dc2626; font-weight: 700; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  
+  .btn-approve {
+    background-color: #7e22ce;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    &:hover { background-color: #6b21a8; }
+  }
+
+  .btn-delete {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+    &:hover { color: #b91c1c; }
+  }
+}

@@ -1,0 +1,115 @@
+.course-preview-container {
+  background-color: #ffffff;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.course-banner {
+  background-color: #4c1d95; // Deep Purple
+  color: #ffffff;
+  padding: 60px 50px;
+  position: relative;
+
+  .banner-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .banner-text {
+    h1 { font-size: 2.5rem; margin-bottom: 15px; font-weight: 800; }
+    .subtitle { font-size: 1.25rem; color: #ddd6fe; margin-bottom: 25px; }
+    .banner-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      .star { color: #fbbf24; vertical-align: middle; }
+      a { color: #ffffff; text-decoration: underline; }
+    }
+  }
+}
+
+// Floating Card
+.purchase-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #f3f4f6;
+  color: #111827;
+  overflow: hidden;
+  position: sticky;
+  top: 100px;
+
+  .video-placeholder {
+    aspect-ratio: 16 / 9;
+    background-color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #4b5563;
+  }
+
+  .card-body {
+    padding: 24px;
+    .price { font-size: 2rem; font-weight: 800; margin-bottom: 20px; }
+    .btn-enroll {
+      width: 100%;
+      background-color: #7e22ce;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      &:hover { background-color: #6b21a8; }
+    }
+    .guarantee {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 15px;
+    }
+  }
+}
+
+// Curriculum
+.curriculum-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  
+  h2 { font-size: 1.5rem; margin-bottom: 25px; color: #111827; }
+  
+  .module-list {
+    max-width: 800px;
+    .module-item {
+      padding: 16px;
+      border: 1px solid #f3f4f6;
+      border-radius: 8px;
+      background-color: #f9fafb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      transition: background 0.2s;
+      &:hover { background-color: #f3f4f6; }
+      .lock-icon { color: #9ca3af; }
+    }
+  }
+}
+
+// Responsive for Mobile
+@media (max-width: 1024px) {
+  .course-banner .banner-grid {
+    grid-template-columns: 1fr;
+  }
+  .purchase-card {
+    position: static;
+    margin-top: 30px;
+  }
+}
