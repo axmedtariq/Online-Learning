@@ -1,7 +1,7 @@
 // Import mongoose at the top
 const mongoose = require('mongoose');
 
-// Define the schema
+// Define the schema  user schema database
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
