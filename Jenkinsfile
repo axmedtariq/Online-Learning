@@ -6,61 +6,61 @@ pipeline {
     }
 
     tools {
-        nodejs 'node18'
+        nodejs 'node24' // Make sure you configured NodeJS installation in Jenkins with this name
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out repository'
+                echo '📥 Checking out repository'
                 checkout scm
             }
         }
 
-        stage('Install Frontend') {
+        stage('Install Client') {
             steps {
-                dir('frontend') {
+                dir('client') {
                     bat 'npm install'
                 }
             }
         }
 
-        stage('Install Backend') {
+        stage('Install Server') {
             steps {
-                dir('backend') {
+                dir('Server') {
                     bat 'npm install'
                 }
             }
         }
 
-        stage('Build Frontend') {
+        stage('Build Client') {
             steps {
-                dir('frontend') {
+                dir('client') {
                     bat 'npm run build'
                 }
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Server') {
             steps {
-                dir('backend') {
-                    bat 'npm run build || echo build skipped'
+                dir('Server') {
+                    bat 'npm run build || echo "Server build skipped"'
                 }
             }
         }
 
-        stage('Test Frontend') {
+        stage('Test Client') {
             steps {
-                dir('frontend') {
+                dir('client') {
                     bat 'npm test || exit 0'
                 }
             }
         }
 
-        stage('Test Backend') {
+        stage('Test Server') {
             steps {
-                dir('backend') {
+                dir('Server') {
                     bat 'npm test || exit 0'
                 }
             }
@@ -69,6 +69,7 @@ pipeline {
 
     post {
         always {
+            echo '🧹 Cleaning workspace'
             cleanWs()
         }
     }
