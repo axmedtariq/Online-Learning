@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { signup, login } = require('../Controller/authcontroller');
-const { forgotPassword, resetPassword } = require('../controller/forgotPasswordController');
+const { forgotPassword, resetPassword } = require('../controller/forgetpasswordcontroller');
 
 // Standard Auth
 router.post('/signup', signup);
