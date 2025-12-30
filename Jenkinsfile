@@ -6,7 +6,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'node18'   // Configure in Jenkins Global Tool Configuration
+        nodejs 'node18'   // MUST exist in Manage Jenkins → Tools
     }
 
     stages {
@@ -18,25 +18,25 @@ pipeline {
             }
         }
 
-        stage('Security Scan (Dependencies)') {
+        stage('Install & Security Scan') {
             parallel {
 
-                stage('Frontend Scan') {
+                stage('Frontend') {
                     steps {
                         dir('frontend') {
-                            echo '🔍 Scanning frontend dependencies'
-                            sh 'npm install'
-                            sh 'npm audit --audit-level=high || true'
+                            echo '🔍 Frontend dependencies'
+                            bat 'npm install'
+                            bat 'npm audit --audit-level=high || exit 0'
                         }
                     }
                 }
 
-                stage('Backend Scan') {
+                stage('Backend') {
                     steps {
                         dir('backend') {
-                            echo '🔍 Scanning backend dependencies'
-                            sh 'npm install'
-                            sh 'npm audit --audit-level=high || true'
+                            echo '🔍 Backend dependencies'
+                            bat 'npm install'
+                            bat 'npm audit --audit-level=high || exit 0'
                         }
                     }
                 }
@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         dir('frontend') {
                             echo '🏗️ Building frontend'
-                            sh 'npm run build'
+                            bat 'npm run build'
                         }
                     }
                 }
@@ -59,7 +59,7 @@ pipeline {
                     steps {
                         dir('backend') {
                             echo '🏗️ Building backend'
-                            sh 'npm run build || echo "Backend build step skipped"'
+                            bat 'npm run build || echo Backend build skipped'
                         }
                     }
                 }
@@ -72,8 +72,8 @@ pipeline {
                 stage('Frontend Tests') {
                     steps {
                         dir('frontend') {
-                            echo '🧪 Running frontend tests'
-                            sh 'npm test -- --watch=false || true'
+                            echo '🧪 Frontend tests'
+                            bat 'npm test || exit 0'
                         }
                     }
                 }
@@ -81,21 +81,21 @@ pipeline {
                 stage('Backend Tests') {
                     steps {
                         dir('backend') {
-                            echo '🧪 Running backend tests'
-                            sh 'npm test || true'
+                            echo '🧪 Backend tests'
+                            bat 'npm test || exit 0'
                         }
                     }
                 }
             }
         }
 
-        stage('Code Quality Scan (SonarQube)') {
+        stage('SonarQube Scan') {
             when {
                 expression { fileExists('sonar-project.properties') }
             }
             steps {
                 echo '📊 Running SonarQube scan'
-                sh 'sonar-scanner'
+                bat 'sonar-scanner'
             }
         }
     }
@@ -104,11 +104,9 @@ pipeline {
         success {
             echo '✅ Pipeline completed successfully'
         }
-
         failure {
             echo '❌ Pipeline failed'
         }
-
         always {
             echo '🧹 Cleaning workspace'
             cleanWs()
