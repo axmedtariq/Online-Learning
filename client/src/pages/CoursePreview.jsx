@@ -13,7 +13,12 @@ const CoursePreview = () => {
             <p className="subtitle">Build real-world apps with Node, Express, React, and MongoDB.</p>
             <div className="banner-meta">
               <span><HiStar className="star" /> 4.9 (2,300 ratings)</span>
-              <span>Created by: <a href="#">Prof. Purple</a></span>
+              <span>
+                Created by: 
+                <button className="link-button" onClick={() => alert('Instructor profile clicked')}>
+                  Prof. Purple
+                </button>
+              </span>
             </div>
           </div>
 
