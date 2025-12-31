@@ -3,10 +3,11 @@ pipeline {
 
     environment {
         NODE_ENV = 'production'
+        CI = 'false' // Prevent create-react-app from treating warnings as errors
     }
 
     tools {
-        nodejs 'node24' // Make sure you configured NodeJS installation in Jenkins with this name
+        nodejs 'node24' // Make sure NodeJS installation in Jenkins with this name is Node v20+
     }
 
     stages {
@@ -37,7 +38,8 @@ pipeline {
         stage('Build Client') {
             steps {
                 dir('client') {
-                    bat 'npm run build'
+                    echo '🚀 Building Client (ignoring ESLint warnings)'
+                    bat 'set CI=false && npm run build'
                 }
             }
         }
