@@ -1,16 +1,33 @@
 import React, { useState } from 'react';
 import { HiOutlineMail, HiArrowLeft } from 'react-icons/hi';
-import '../styles/ForgetPassword.scss'; // Using the shared Auth styles
+import axios from 'axios'; // 1. Import Axios
+import '../styles/ForgetPassword.scss';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false); // 2. Add loading state
+  const [error, setError] = useState(''); // 3. Add error state
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
-      console.log("Reset link sent to:", email);
-      setIsSubmitted(true);
+    setLoading(true);
+    setError('');
+
+    try {
+      // 4. Connect to your Backend route
+      const response = await axios.post('http://localhost:5000/api/auth/forgot-password', {
+        email: email
+      });
+
+      if (response.status === 200) {
+        setIsSubmitted(true);
+      }
+    } catch (err) {
+      // Handle cases where email doesn't exist or server is down
+      setError(err.response?.data?.msg || "Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -18,7 +35,6 @@ const ForgotPassword = () => {
     <div className="auth-page">
       <div className="auth-card">
         
-        {/* Back to Login Link */}
         <a href="/login" className="back-link">
           <HiArrowLeft className="icon" /> Back to Login
         </a>
@@ -32,6 +48,9 @@ const ForgotPassword = () => {
               </p>
             </div>
 
+            {/* 5. Show Error Alert */}
+            {error && <div className="error-alert-box">{error}</div>}
+
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="input-group">
                 <label>Email Address</label>
@@ -41,18 +60,18 @@ const ForgotPassword = () => {
                     type="email" 
                     required
                     placeholder="name@example.com"
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
 
-              <button type="submit" className="btn-primary">
-                Send Reset Link
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? "Sending..." : "Send Reset Link"}
               </button>
             </form>
           </>
         ) : (
-          /* Success State Message */
           <div className="success-state">
             <div className="success-icon-circle">
               <HiOutlineMail size={40} />

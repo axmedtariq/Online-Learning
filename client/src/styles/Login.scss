@@ -105,3 +105,19 @@ $gray-border: #e5e7eb;
   color: #4b5563;
   a { color: $purple-primary; font-weight: 700; text-decoration: none; &:hover { text-decoration: underline; } }
 }
+
+.error-alert {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #fecaca;
+}
+
+.btn-submit:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}

@@ -1,0 +1,81 @@
+.checkout-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .checkout-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+
+  .course-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .price {
+      color: #27ae60;
+      font-size: 1.2rem;
+    }
+  }
+
+  .payment-form {
+    .stripe-element-container {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      margin-bottom: 20px;
+      transition: border-color 0.3s ease;
+
+      &:focus-within {
+        border-color: #6772e5; // Stripe's signature purple
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .pay-button {
+      width: 100%;
+      padding: 14px;
+      background-color: #6772e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background-color: #5469d4;
+      }
+
+      &:disabled {
+        background-color: #aab7c4;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .error-message {
+    color: #eb1c26;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+  }
+}

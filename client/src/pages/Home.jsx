@@ -1,22 +1,56 @@
-import React from 'react';
-import '../styles/Home.scss'; // We will create this folder/file next
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import '../styles/Home.scss';
 
 const Home = () => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // 1. Check if user is logged in to change Navbar buttons
+  const token = localStorage.getItem('token');
+
+  // 2. Fetch Courses from Backend
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/courses');
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
   return (
     <div className="home-container">
-      {/* --- NAVBAR --- */}
+      {/* --- NAVBAR (Connected) --- */}
       <nav className="navbar">
-        <div className="logo">E-LEARN</div>
+        <div className="logo" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
+          E-LEARN
+        </div>
         
         <div className="nav-links">
-          <a href="#">Courses</a>
+          <Link to="/">Courses</Link>
           <a href="#">Instructors</a>
           <a href="#">Resources</a>
         </div>
 
         <div className="auth-buttons">
-          <button className="btn-login">Log In</button>
-          <button className="btn-signup">Sign Up</button>
+          {token ? (
+            // If logged in, show Profile button
+            <button className="btn-signup" onClick={() => navigate('/profile')}>My Profile</button>
+          ) : (
+            // If not logged in, show Login/Signup
+            <>
+              <button className="btn-login" onClick={() => navigate('/login')}>Log In</button>
+              <button className="btn-signup" onClick={() => navigate('/signup')}>Sign Up</button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -33,28 +67,42 @@ const Home = () => {
         <div className="decorative-circle"></div>
       </header>
 
-      {/* --- TOP RATED COURSES --- */}
+      {/* --- TOP RATED COURSES (Connected to DB) --- */}
       <section className="section">
         <h2 className="section-title">Top Rated Courses</h2>
         <div className="course-grid">
-          {[1, 2, 3, 4].map((item) => (
-            <div key={item} className="course-card">
-              <div className="course-image-placeholder">COURSE IMAGE</div>
-              <div className="course-details">
-                <h3>Fullstack MERN Masterclass</h3>
-                <p className="instructor">Dr. Angela Yu</p>
-                <div className="rating">
-                  <span className="stars">4.8</span>
-                  <span className="reviews">(12,450 reviews)</span>
+          {loading ? (
+            <div className="loading-spinner">Loading Courses...</div>
+          ) : (
+            courses.map((course) => (
+              <div 
+                key={course._id} 
+                className="course-card" 
+                onClick={() => navigate(`/course/${course._id}`)}
+              >
+                <div className="course-image-placeholder">
+                  {course.thumbnail ? (
+                    <img src={course.thumbnail} alt={course.title} style={{width:'100%', height:'100%', objectFit:'cover'}} />
+                  ) : (
+                    "NO IMAGE"
+                  )}
                 </div>
-                <p className="price">$89.99</p>
+                <div className="course-details">
+                  <h3>{course.title}</h3>
+                  <p className="instructor">{course.instructorName || "MERN Expert"}</p>
+                  <div className="rating">
+                    <span className="stars">★ {course.rating || '4.8'}</span>
+                    <span className="reviews">({course.numReviews || '0'} reviews)</span>
+                  </div>
+                  <p className="price">${course.price}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
+      {/* --- FOOTER (UNCHANGED AS REQUESTED) --- */}
       <footer className="footer">
         <div className="footer-grid">
           <ul>

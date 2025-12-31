@@ -96,3 +96,20 @@ $red-500: #ef4444;
     &:hover { border-bottom-color: $purple-700; }
   }
 }
+
+.server-error-alert {
+  background-color: #ffdce0;
+  color: #af2032;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #ebccd1;
+}
+
+.btn-primary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
