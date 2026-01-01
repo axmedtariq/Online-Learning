@@ -2,87 +2,110 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Helper to generate JWT
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' } // Good balance between security & UX
+    );
+};
+
 // --- SIGNUP LOGIC ---
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
 
-        // 1. Check if user exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: "User already exists" });
+        // Validate inputs
+        if (!username || username.length < 3)
+            return res.status(400).json({ message: "Username must be at least 3 characters" });
+        if (!email || !/\S+@\S+\.\S+/.test(email))
+            return res.status(400).json({ message: "Invalid email" });
+        if (!password || password.length < 6)
+            return res.status(400).json({ message: "Password must be at least 6 characters" });
 
-        // 2. Hash Password
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser)
+            return res.status(400).json({ message: "User already exists" });
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // 3. Create User
-        const newUser = await User.create({ 
-            username, 
-            email, 
+        // Create new user
+        const newUser = await User.create({
+            username,
+            email,
             password: hashedPassword,
             role: 'student' // Default role
         });
 
-        // 4. Generate Token (So they don't have to login immediately after signing up)
-        const token = jwt.sign(
-            { id: newUser._id, role: newUser.role }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
+        // Generate token
+        const token = generateToken(newUser);
 
-        res.status(201).json({ 
-            token, 
-            user: { username: newUser.username, email: newUser.email, role: newUser.role },
-            message: "User registered successfully!" 
+        res.status(201).json({
+            token,
+            user: {
+                id: newUser._id,
+                username: newUser.username,
+                email: newUser.email,
+                role: newUser.role
+            },
+            message: "User registered successfully!"
         });
     } catch (err) {
         console.error("Signup Error:", err);
-        res.status(500).json({ message: "Something went wrong" });
+        next(err); // Pass to global error handler
     }
 };
 
 // --- LOGIN LOGIC ---
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // 1. Find User
+        // Validate input
+        if (!email || !password)
+            return res.status(400).json({ message: "Email and password are required" });
+
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
 
-        // 2. Verify Password
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+        if (!isPasswordCorrect)
+            return res.status(400).json({ message: "Invalid credentials" });
 
-        // 3. Create JWT Token
-        const token = jwt.sign(
-            { id: user._id, role: user.role }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' } // Increased to 24h for better UX
-        );
+        const token = generateToken(user);
 
-        res.status(200).json({ 
-            token, 
-            user: { id: user._id, username: user.username, email: user.email, role: user.role } 
+        res.status(200).json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
         });
     } catch (err) {
         console.error("Login Error:", err);
-        res.status(500).json({ message: "Server error" });
+        next(err); // Use centralized error handling
     }
 };
 
 // --- GET PROFILE LOGIC ---
-exports.getProfile = async (req, res) => {
+exports.getProfile = async (req, res, next) => {
     try {
-        // req.user.id is provided by your verifyToken middleware
         const user = await User.findById(req.user.id)
-            .select('-password') // Security: Remove password from response
-            .populate('enrolledCourses'); // Joins the course data
+            .select('-password') // Never return password
+            .populate('enrolledCourses'); // Include course info
 
-        if (!user) return res.status(404).json({ msg: "User not found" });
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
 
         res.status(200).json(user);
-    } catch (error) {
-        console.error("Profile Error:", error);
-        res.status(500).json({ msg: "Server Error" });
+    } catch (err) {
+        console.error("Profile Error:", err);
+        next(err); // CI/CD safe
     }
 };

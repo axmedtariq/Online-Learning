@@ -1,47 +1,65 @@
 import React, { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import axios from 'axios'; // 1. Import Axios
-import { useNavigate } from 'react-router-dom'; // 2. Import Navigate
-import '../styles/signup.scss'; 
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import '../styles/signup.scss';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
+
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // 3. Add loading state
-  const [serverMsg, setServerMsg] = useState(''); // 4. Add server message state
-  
+  const [loading, setLoading] = useState(false);
+  const [serverMsg, setServerMsg] = useState('');
+
   const navigate = useNavigate();
 
+  // Client-side validation (CI-safe)
   const validate = () => {
-    let newErrors = {};
-    if (formData.username.length < 3) newErrors.username = "Username must be 3+ characters";
-    if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email";
-    if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters";
-    
+    const newErrors = {};
+
+    if (formData.username.trim().length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    }
+
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // 5. Connect to Backend via Axios
+  // Submit handler (unused variable fixed)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerMsg('');
-    
-    if (validate()) {
-      setLoading(true);
-      try {
-        const response = await axios.post('http://localhost:5000/api/auth/signup', formData);
-        
-        // Success
-        alert("Account Created Successfully!");
-        navigate('/login'); // Send user to login page after signing up
-        
-      } catch (err) {
-        // Error handling (e.g., User already exists)
-        setServerMsg(err.response?.data?.msg || "Something went wrong. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+
+    if (!validate()) return;
+
+    setLoading(true);
+
+    try {
+      await axios.post(`${API_URL}/api/auth/signup`, formData);
+
+      alert('Account created successfully!');
+      navigate('/login');
+    } catch (error) {
+      setServerMsg(
+        error.response?.data?.msg ||
+          'Something went wrong. Please try again.'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,10 +71,11 @@ const SignUp = () => {
           <p>Start your learning journey today</p>
         </div>
 
-        {/* 6. Display Server Error Messages */}
-        {serverMsg && <div className="server-error-alert">{serverMsg}</div>}
+        {serverMsg && (
+          <div className="server-error-alert">{serverMsg}</div>
+        )}
 
-        <button className="btn-social" type="button">
+        <button type="button" className="btn-social">
           <FcGoogle size={22} />
           <span>Sign up with Google</span>
         </button>
@@ -68,47 +87,66 @@ const SignUp = () => {
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
             <label>Username</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="johndoe"
+              value={formData.username}
               className={errors.username ? 'input-error' : ''}
-              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
               required
             />
-            {errors.username && <p className="error-message">{errors.username}</p>}
+            {errors.username && (
+              <p className="error-message">{errors.username}</p>
+            )}
           </div>
 
           <div className="input-group">
             <label>Email Address</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder="hello@example.com"
+              value={formData.email}
               className={errors.email ? 'input-error' : ''}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
-            {errors.email && <p className="error-message">{errors.email}</p>}
+            {errors.email && (
+              <p className="error-message">{errors.email}</p>
+            )}
           </div>
 
           <div className="input-group">
             <label>Password</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               placeholder="••••••••"
+              value={formData.password}
               className={errors.password ? 'input-error' : ''}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
             />
-            {errors.password && <p className="error-message">{errors.password}</p>}
+            {errors.password && (
+              <p className="error-message">{errors.password}</p>
+            )}
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Creating Account..." : "Create My Account"}
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Create My Account'}
           </button>
         </form>
 
         <p className="auth-redirect">
-          Already a member? <a href="/login">Log In</a>
+          Already a member? <Link to="/login">Log In</Link>
         </p>
       </div>
     </div>
