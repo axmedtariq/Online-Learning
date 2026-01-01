@@ -1,3 +1,4 @@
+// ALL ADMIN ROUTE HERE
 const express = require('express');
 const router = express.Router();
 const { isAdmin } = require('../middleware/adminMiddleware');
