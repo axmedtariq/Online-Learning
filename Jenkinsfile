@@ -3,11 +3,11 @@ pipeline {
 
     environment {
         NODE_ENV = 'production'
-        CI = 'false'   // Prevent CRA from failing on warnings
+        CI = 'false'
     }
 
     tools {
-        nodejs 'node24'   // Must exist in Jenkins Global Tools
+        nodejs 'node24'
     }
 
     stages {
@@ -46,16 +46,20 @@ pipeline {
             }
         }
 
-        stage('Build Server') {
+        stage('Build Server (Optional)') {
             steps {
                 dir('Server') {
-                    echo '🏗️ Building server (safe mode)'
+                    echo '🏗️ Checking if server build exists'
+
                     bat '''
-                    npm run build
+                    npm run | findstr /C:"build" >nul
                     if %ERRORLEVEL% NEQ 0 (
-                        echo Server build skipped or not required
+                        echo No server build script found. Skipping...
                         exit /b 0
                     )
+
+                    echo Server build script found. Running build...
+                    npm run build
                     '''
                 }
             }
