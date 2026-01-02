@@ -1,23 +1,18 @@
+# Use Node.js as the base image
 FROM node:18-alpine
 
-# Create app directory
+# Set the working directory
 WORKDIR /app
 
-# Copy dependency files
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install production dependencies only
-RUN npm install --omit=dev
-
-# Copy source code
+# Copy the rest of the server code
 COPY . .
 
-# Expose backend port
-EXPOSE 5000   # change if your server uses different port
+# The port your Express app runs on
+EXPOSE 5000
 
-# Run as non-root user (security best practice)
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
-
-# Start backend server
+# Start the server
 CMD ["npm", "start"]

@@ -1,46 +1,43 @@
-version: "3.9"
+version: '3.8'
 
 services:
-
-  backend:
-    build:
-      context: ./backend
-    container_name: backend-service
-    ports:
-      - "5000:5000"
-    env_file:
-      - .env
-    restart: unless-stopped
-    depends_on:
-      - mongodb
-    networks:
-      - app-network
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: frontend-service
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - app-network
-
+  # 1. Database Service
   mongodb:
-    image: mongo:7
-    container_name: mongodb
-    restart: unless-stopped
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
-    networks:
-      - app-network
-    # ⚠️ Do NOT expose port in production
+    restart: always
+
+  # 2. Backend Service
+  server:
+    build: ./server
+    container_name: server_container
+    ports:
+      - "5000:5000"
+    env_file: .env
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/Learning
+    depends_on:
+      - mongodb
+    # Correct place for restart:
+    restart: on-failure 
+
+  # 3. Frontend Service
+  client:
+    build: ./client
+    container_name: client_container
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - server
+    stdin_open: true 
+    tty: true 
+    restart: always
 
 volumes:
   mongo-data:
-
-networks:
-  app-network:
-    driver: bridge

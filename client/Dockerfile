@@ -1,29 +1,14 @@
-# ---------- Build Stage ----------
-FROM node:18-alpine AS build
+# Use Node.js for building the React app
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy source code
 COPY . .
 
-# Build frontend (React / Vite / Next static export)
-RUN npm run build
+# Port for React Dev Server
+EXPOSE 3000
 
-
-# ---------- Production Stage ----------
-FROM nginx:alpine
-
-# Remove default nginx static files
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy build output to nginx
-COPY --from=build /app/dist /usr/share/nginx/html
-# If React (CRA) use /app/build instead of /app/dist
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
