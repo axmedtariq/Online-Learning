@@ -1,0 +1,29 @@
+# Global settings
+replicaCount: 1
+
+# Image definitions (Ensure these match your Docker build names)
+images:
+  backend: learning-server
+  frontend: learning-client
+  mongodb: mongo
+  pullPolicy: IfNotPresent
+
+# Backend Configuration
+backend:
+  port: 5000
+  env:
+    nodeEnv: development
+    jwtSecret: "f7d892345bc61a29d834567890abcdef" # Change in production
+    mongoUri: "mongodb://mongodb-service:27017/Learning"
+    emailUser: "axmedobsiye15@gmail.com"
+    emailPass: "abcdefghijklmnoq"
+
+# Frontend Configuration
+frontend:
+  port: 3000
+  apiUrl: "http://localhost:5000/api"
+
+# Database Configuration
+mongodb:
+  port: 27017
+  storage: 2Gi # How much disk space to reserve in Minikube

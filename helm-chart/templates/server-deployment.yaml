@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend  # This MUST match the labels below
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: your-docker-image-name  # Change this to your image
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/Learning"
+        - name: JWT_SECRET
+          value: {{ .Values.secrets.jwtSecret | quote }}
+        - name: EMAIL_USER
+          value: {{ .Values.secrets.emailUser | quote }}
+        - name: EMAIL_PASS
+          value: {{ .Values.secrets.emailPass | quote }}
+        - name: STRIPE_SECRET_KEY
+          value: {{ .Values.secrets.stripeKey | quote }}
