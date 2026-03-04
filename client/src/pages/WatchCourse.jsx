@@ -4,34 +4,33 @@ import { HiCheckCircle, HiPlay, HiChevronLeft } from 'react-icons/hi';
 import axios from 'axios';
 import '../styles/WatchCourse.scss';
 
+import QuizComponent from '../components/QuizComponent';
+import ReviewForm from '../components/ReviewForm';
+
 const WatchCourse = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [activeLesson, setActiveLesson] = useState(0);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('content');
+
+  const fetchFullCourse = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`http://localhost:5000/api/courses/watch/${courseId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCourse(response.data);
+    } catch (err) {
+      console.error("Access denied or course not found");
+      navigate(`/course/${courseId}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchFullCourse = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        
-        // --- ENDPOINT: GET /api/courses/watch/:id ---
-        // This route should check if the user is enrolled before sending video links
-        const response = await axios.get(`http://localhost:5000/api/courses/watch/${courseId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        setCourse(response.data);
-      } catch (err) {
-        console.error("Access denied or course not found");
-        // Redirect to preview if they haven't bought it
-        navigate(`/course/${courseId}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFullCourse();
   }, [courseId, navigate]);
 
@@ -42,7 +41,7 @@ const WatchCourse = () => {
     <div className="watch-container">
       <header className="watch-header">
         <div className="header-left">
-          <button onClick={() => navigate(-1)} className="back-btn"><HiChevronLeft size={24}/></button>
+          <button onClick={() => navigate(-1)} className="back-btn"><HiChevronLeft size={24} /></button>
           <h1 className="course-title">{course.title}</h1>
         </div>
         <div className="progress-indicator">Lesson {activeLesson + 1} of {course.lessons.length}</div>
@@ -50,14 +49,35 @@ const WatchCourse = () => {
 
       <div className="watch-main">
         <div className="video-section">
-          <video 
-            key={course.lessons[activeLesson].videoUrl} 
-            controls 
+          <video
+            key={course.lessons[activeLesson].videoUrl}
+            controls
             className="main-video"
             controlsList="nodownload"
           >
             <source src={course.lessons[activeLesson].videoUrl} type="video/mp4" />
           </video>
+
+          <div className="watch-tabs">
+            <button className={activeTab === 'content' ? 'active' : ''} onClick={() => setActiveTab('content')}>About Lesson</button>
+            <button className={activeTab === 'quiz' ? 'active' : ''} onClick={() => setActiveTab('quiz')}>Quizzes ({course.numQuizzes || 0})</button>
+            <button className={activeTab === 'review' ? 'active' : ''} onClick={() => setActiveTab('review')}>Leave Feedback</button>
+          </div>
+
+          <div className="tab-content">
+            {activeTab === 'content' && (
+              <div className="lesson-details">
+                <h3>{course.lessons[activeLesson].title}</h3>
+                <p>{course.lessons[activeLesson].description || "No description provided for this lesson."}</p>
+              </div>
+            )}
+            {activeTab === 'quiz' && (
+              <QuizComponent courseId={courseId} />
+            )}
+            {activeTab === 'review' && (
+              <ReviewForm courseId={courseId} onReviewSuccess={fetchFullCourse} />
+            )}
+          </div>
         </div>
 
         <aside className="curriculum-sidebar">
@@ -85,11 +105,6 @@ const WatchCourse = () => {
           </div>
         </aside>
       </div>
-
-      <footer className="lesson-details">
-        <h3>About this lesson: {course.lessons[activeLesson].title}</h3>
-        <p>{course.lessons[activeLesson].description || "No description provided for this lesson."}</p>
-      </footer>
     </div>
   );
 };

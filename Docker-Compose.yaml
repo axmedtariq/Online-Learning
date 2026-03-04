@@ -11,7 +11,20 @@ services:
       - mongo-data:/data/db
     restart: always
 
-  # 2. Backend Service
+  # 2. Vault Service
+  vault:
+    image: hashicorp/vault:latest
+    container_name: vault_container
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=hvs.your_vault_token_here
+      - VAULT_ADDR=http://127.0.0.1:8200
+    cap_add:
+      - IPC_LOCK
+    restart: always
+
+  # 3. Backend Service
   server:
     build: ./server
     container_name: server_container
@@ -22,8 +35,9 @@ services:
       - MONGO_URI=mongodb://mongodb:27017/Learning
     depends_on:
       - mongodb
+      - vault
     # Correct place for restart:
-    restart: on-failure 
+    restart: on-failure
 
   # 3. Frontend Service
   client:
@@ -35,8 +49,80 @@ services:
       - REACT_APP_API_URL=http://localhost:5000/api
     depends_on:
       - server
-    stdin_open: true 
-    tty: true 
+    stdin_open: true
+    tty: true
+    restart: always
+
+  # 5. Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_container
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheusus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  # 6. Grafana Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_container
+    ports:
+      - "3100:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/provisioning/alerting:/etc/grafana/provisioning/alerting
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    restart: always
+
+  # 7. Host Metrics (CPU, RAM, Disk)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter_container
+    ports:
+      - "9100:9100"
+    restart: always
+
+  # 8. Container Metrics (Docker Stats)
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
+
+  # 9. Central Logging (Elasticsearch)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch_container
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    restart: always
+
+  # 10. Visualization (Kibana)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: kibana_container
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
     restart: always
 
 volumes:

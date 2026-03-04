@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 // MATCHING YOUR SCREENSHOT: Folder is 'Controller', files are lowercase
-const { signup, login } = require('../Controller/authcontroller');
+const { signup, login, getProfile } = require('../Controller/authcontroller');
 const { forgotPassword, resetPassword } = require('../Controller/forgetpasswordcontroller');
+const { protect } = require('../middleware/authmiddleware');
 
 // Standard Auth
 router.post('/signup', signup);
 router.post('/login', login);
+router.get('/profile', protect, getProfile);
 
 // Password Reset
 router.post('/forgot-password', forgotPassword);

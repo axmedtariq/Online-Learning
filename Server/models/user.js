@@ -1,21 +1,38 @@
-// Import mongoose at the top
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-// Define the schema  database schema 
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { 
-        type: String,   
-        default: 'student', 
-        enum: ['student', 'instructor', 'admin'] 
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
     },
-    isApproved: { 
-        type: Boolean, 
-        default: false // Admin must change this to true
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true
+        }
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.ENUM('student', 'instructor', 'admin'),
+        defaultValue: 'student'
+    },
+    isApproved: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
-}, { timestamps: true });
+}, {
+    timestamps: true
+});
 
-// Export the model
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

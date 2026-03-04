@@ -1,5 +1,18 @@
-const progressSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
-  completedLessons: [{ type: mongoose.Schema.Types.ObjectId }] // Array of lesson IDs professional ID
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Progress = sequelize.define('Progress', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  isCompleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
+}, {
+  timestamps: true
 });
+
+module.exports = Progress;

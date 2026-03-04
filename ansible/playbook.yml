@@ -1,0 +1,37 @@
+---
+- name: Bootstrap Kubernetes Cluster for E-Learning App
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Create namespaces
+      kubernetes.core.k8s:
+        name: "{{ item }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+      loop:
+        - learning-prod
+        - monitoring
+        - vault
+
+    - name: Enable Istio injection on production namespace
+      kubernetes.core.k8s:
+        state: patched
+        kind: Namespace
+        name: learning-prod
+        definition:
+          metadata:
+            labels:
+              istio-injection: enabled
+
+    - name: Install Helm charts for monitoring (Prometheus/Grafana)
+      kubernetes.core.helm:
+        name: prometheus
+        chart_ref: prometheus-community/kube-prometheus-stack
+        release_namespace: monitoring
+        create_namespace: true
+      ignore_errors: true # In case helm is not repo-added yet
+
+    - name: Display helpful message
+      debug:
+        msg: "Cluster bootstrap complete. Istio injection enabled on 'learning-prod'."

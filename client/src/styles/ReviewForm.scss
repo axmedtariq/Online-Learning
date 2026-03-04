@@ -1,0 +1,90 @@
+.review-form-container {
+    padding: 30px;
+    background-color: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    max-width: 600px;
+    margin: 20px 0;
+
+    h3 {
+        font-size: 1.5rem;
+        color: #1e293b;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+    }
+
+    .review-form {
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+
+            .star {
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+                color: #d1d5db;
+                transition: all 0.2s;
+
+                &.active {
+                    color: #fbbf24;
+                }
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+
+            &:focus {
+                border-color: #7c3aed;
+            }
+        }
+
+        .btn-submit {
+            background-color: #7c3aed;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background-color: #6d28d9;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            &:disabled {
+                background: #cbd5e1;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    }
+}

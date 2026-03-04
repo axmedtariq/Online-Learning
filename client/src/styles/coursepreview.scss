@@ -19,14 +19,32 @@
   }
 
   .banner-text {
-    h1 { font-size: 2.5rem; margin-bottom: 15px; font-weight: 800; }
-    .subtitle { font-size: 1.25rem; color: #ddd6fe; margin-bottom: 25px; }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: #ddd6fe;
+      margin-bottom: 25px;
+    }
+
     .banner-meta {
       display: flex;
       gap: 20px;
       font-size: 0.9rem;
-      .star { color: #fbbf24; vertical-align: middle; }
-      a { color: #ffffff; text-decoration: underline; }
+
+      .star {
+        color: #fbbf24;
+        vertical-align: middle;
+      }
+
+      a {
+        color: #ffffff;
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -54,7 +72,13 @@
 
   .card-body {
     padding: 24px;
-    .price { font-size: 2rem; font-weight: 800; margin-bottom: 20px; }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
     .btn-enroll {
       width: 100%;
       background-color: #7e22ce;
@@ -66,8 +90,12 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.2s;
-      &:hover { background-color: #6b21a8; }
+
+      &:hover {
+        background-color: #6b21a8;
+      }
     }
+
     .guarantee {
       text-align: center;
       font-size: 0.75rem;
@@ -82,11 +110,16 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 50px;
-  
-  h2 { font-size: 1.5rem; margin-bottom: 25px; color: #111827; }
-  
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: #111827;
+  }
+
   .module-list {
     max-width: 800px;
+
     .module-item {
       padding: 16px;
       border: 1px solid #f3f4f6;
@@ -97,8 +130,70 @@
       align-items: center;
       margin-bottom: 10px;
       transition: background 0.2s;
-      &:hover { background-color: #f3f4f6; }
-      .lock-icon { color: #9ca3af; }
+
+      &:hover {
+        background-color: #f3f4f6;
+      }
+
+      .lock-icon {
+        color: #9ca3af;
+      }
+    }
+  }
+}
+
+// Reviews section
+.reviews-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  border-top: 1px solid #f3f4f6;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+  }
+
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .review-card {
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #ffffff;
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+
+      strong {
+        font-size: 1.1rem;
+        color: #111827;
+      }
+    }
+
+    .review-rating {
+      display: flex;
+      gap: 2px;
+
+      .star {
+        color: #d1d5db;
+
+        &.active {
+          color: #fbbf24;
+        }
+      }
+    }
+
+    p {
+      color: #4b5563;
+      line-height: 1.6;
     }
   }
 }
@@ -108,6 +203,7 @@
   .course-banner .banner-grid {
     grid-template-columns: 1fr;
   }
+
   .purchase-card {
     position: static;
     margin-top: 30px;

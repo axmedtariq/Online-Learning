@@ -1,20 +1,20 @@
-const User = require('../models/user');
+const { User, Course } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Helper to generate JWT
 const generateToken = (user) => {
     return jwt.sign(
-        { id: user._id, role: user.role },
+        { id: user.id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: '24h' } // Good balance between security & UX
+        { expiresIn: '24h' }
     );
 };
 
 // --- SIGNUP LOGIC ---
 exports.signup = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, role } = req.body;
 
         // Validate inputs
         if (!username || username.length < 3)
@@ -25,7 +25,7 @@ exports.signup = async (req, res, next) => {
             return res.status(400).json({ message: "Password must be at least 6 characters" });
 
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ where: { email } });
         if (existingUser)
             return res.status(400).json({ message: "User already exists" });
 
@@ -37,7 +37,7 @@ exports.signup = async (req, res, next) => {
             username,
             email,
             password: hashedPassword,
-            role: 'student' // Default role
+            role: role || 'student'
         });
 
         // Generate token
@@ -46,7 +46,7 @@ exports.signup = async (req, res, next) => {
         res.status(201).json({
             token,
             user: {
-                id: newUser._id,
+                id: newUser.id,
                 username: newUser.username,
                 email: newUser.email,
                 role: newUser.role
@@ -55,7 +55,7 @@ exports.signup = async (req, res, next) => {
         });
     } catch (err) {
         console.error("Signup Error:", err);
-        next(err); // Pass to global error handler
+        next(err);
     }
 };
 
@@ -64,11 +64,10 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // Validate input
         if (!email || !password)
             return res.status(400).json({ message: "Email and password are required" });
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ where: { email } });
         if (!user)
             return res.status(404).json({ message: "User not found" });
 
@@ -81,7 +80,7 @@ exports.login = async (req, res, next) => {
         res.status(200).json({
             token,
             user: {
-                id: user._id,
+                id: user.id,
                 username: user.username,
                 email: user.email,
                 role: user.role
@@ -89,16 +88,17 @@ exports.login = async (req, res, next) => {
         });
     } catch (err) {
         console.error("Login Error:", err);
-        next(err); // Use centralized error handling
+        next(err);
     }
 };
 
 // --- GET PROFILE LOGIC ---
 exports.getProfile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id)
-            .select('-password') // Never return password
-            .populate('enrolledCourses'); // Include course info
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] },
+            include: [{ model: Course, as: 'enrolledCourses' }]
+        });
 
         if (!user)
             return res.status(404).json({ message: "User not found" });
@@ -106,6 +106,6 @@ exports.getProfile = async (req, res, next) => {
         res.status(200).json(user);
     } catch (err) {
         console.error("Profile Error:", err);
-        next(err); // CI/CD safe
+        next(err);
     }
 };

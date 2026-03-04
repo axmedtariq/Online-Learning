@@ -1,0 +1,181 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "id": 1,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "gridPos": {
+                "h": 4,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 100,
+            "title": "🟢 MISSION STATUS: SERVICE MESH HEALTH",
+            "type": "stat",
+            "targets": [
+                {
+                    "expr": "sum(irate(istio_requests_total{response_code=\"200\"}[5m])) / sum(irate(istio_requests_total[5m])) * 100",
+                    "legendFormat": "Global Success Rate"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 99
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "gridPos": {
+                "h": 7,
+                "w": 12,
+                "x": 0,
+                "y": 4
+            },
+            "id": 1,
+            "title": "⚙️ ENGINE 1: BACKEND CPU LOAD",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{container=\"backend\"})",
+                    "legendFormat": "Backend CPU"
+                }
+            ]
+        },
+        {
+            "gridPos": {
+                "h": 7,
+                "w": 12,
+                "x": 12,
+                "y": 4
+            },
+            "id": 2,
+            "title": "⚙️ ENGINE 2: FRONTEND CPU LOAD",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{container=\"frontend\"})",
+                    "legendFormat": "Frontend CPU"
+                }
+            ]
+        },
+        {
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 0,
+                "y": 11
+            },
+            "id": 3,
+            "title": "📡 RADAR: THROUGHPUT (Requests/sec)",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "sum(irate(istio_requests_total{reporter=\"destination\"}[5m])) by (destination_workload)",
+                    "legendFormat": "{{destination_workload}}"
+                }
+            ]
+        },
+        {
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 8,
+                "y": 11
+            },
+            "id": 4,
+            "title": "🐌 ALTIMETER: LATENCY (ms) P95",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.95, sum(irate(istio_request_duration_milliseconds_bucket[5m])) by (le, destination_workload))",
+                    "legendFormat": "{{destination_workload}}"
+                }
+            ]
+        },
+        {
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 16,
+                "y": 11
+            },
+            "id": 5,
+            "title": "💾 FUEL: SQL SERVER MEMORY",
+            "type": "gauge",
+            "targets": [
+                {
+                    "expr": "sum(container_memory_usage_bytes{container=\"sqlserver\"})",
+                    "legendFormat": "MSSQL RAM"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "bytes"
+                }
+            }
+        },
+        {
+            "gridPos": {
+                "h": 4,
+                "w": 24,
+                "x": 0,
+                "y": 19
+            },
+            "id": 6,
+            "title": "🛠️ REPAIR LOG: 5xx SERVER ERRORS",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "sum(irate(istio_requests_total{response_code=~\"5.*\"}[5m])) by (destination_workload)",
+                    "legendFormat": "Errors: {{destination_workload}}"
+                }
+            ]
+        }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 36,
+    "style": "dark",
+    "time": {
+        "from": "now-1h",
+        "to": "now"
+    },
+    "title": "APP AIRPLANE COCKPIT (ISTIO K8S)",
+    "uid": "app-cockpit-k8s",
+    "version": 3
+}

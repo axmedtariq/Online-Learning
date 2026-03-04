@@ -11,6 +11,7 @@ const SignUp = () => {
     username: '',
     email: '',
     password: '',
+    role: 'student'
   });
 
   const [errors, setErrors] = useState({});
@@ -56,7 +57,7 @@ const SignUp = () => {
     } catch (error) {
       setServerMsg(
         error.response?.data?.msg ||
-          'Something went wrong. Please try again.'
+        'Something went wrong. Please try again.'
       );
     } finally {
       setLoading(false);
@@ -134,6 +135,30 @@ const SignUp = () => {
             {errors.password && (
               <p className="error-message">{errors.password}</p>
             )}
+          </div>
+
+          <div className="input-group">
+            <label>Choose Account Type</label>
+            <div className="role-selector">
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  checked={formData.role === 'student'}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                /> Student
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="instructor"
+                  checked={formData.role === 'instructor'}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                /> Instructor
+              </label>
+            </div>
           </div>
 
           <button

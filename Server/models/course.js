@@ -1,18 +1,38 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const lessonSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  videoUrl: { type: String, required: true }, // URL from Cloudinary storing
-  duration: String,
+const Course = sequelize.define('Course', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  thumbnail: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  averageRating: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0
+  },
+  numReviews: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  }
+}, {
+  timestamps: true
 });
 
-const courseSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  price: { type: Number, required: true },
-  thumbnail: { type: String }, 
-  instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  lessons: [lessonSchema] // Array of lessons 
-}, { timestamps: true });
-
-module.exports = mongoose.model('Course', courseSchema);
+module.exports = Course;

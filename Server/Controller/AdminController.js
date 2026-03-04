@@ -1,27 +1,48 @@
-const User = require('../models/user');
-const Course = require('../models/course');
+const { User, Course } = require('../models');
 
 // --- USER MANAGEMENT ---
 exports.getAllUsers = async (req, res) => {
-    const users = await User.find().select('-password'); // Don't send passwords
-    res.json(users);
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching users" });
+    }
 };
 
 exports.deleteUser = async (req, res) => {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User removed successfully" });
+    try {
+        await User.destroy({ where: { id: req.params.id } });
+        res.json({ message: "User removed successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting user" });
+    }
 };
 
 // --- INSTRUCTOR APPROVAL ---
 exports.toggleInstructorApproval = async (req, res) => {
-    const user = await User.findById(req.params.id);
-    user.isApproved = !user.isApproved;
-    await user.save();
-    res.json({ message: `Instructor ${user.isApproved ? 'Approved' : 'Suspended'}` });
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.isApproved = !user.isApproved;
+        await user.save();
+        res.json({ message: `Instructor ${user.isApproved ? 'Approved' : 'Suspended'}` });
+    } catch (error) {
+        res.status(500).json({ message: "Error toggling approval" });
+    }
 };
 
 // --- COURSE MANAGEMENT ---
 exports.getAllCourses = async (req, res) => {
-    const courses = await Course.find().populate('instructor', 'username');
-    res.json(courses);
+    try {
+        const courses = await Course.findAll({
+            include: [{ model: User, as: 'instructor', attributes: ['username'] }]
+        });
+        res.json(courses);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching courses" });
+    }
 };

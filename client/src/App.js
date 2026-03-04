@@ -12,7 +12,8 @@ import ResetPassword from './pages/ResetPassword';
 import WatchCourse from './pages/WatchCourse';
 import AdminPanel from './pages/AdminPanel';
 import CreateCourse from './pages/CreateCourse';
-import StudentProfile from './pages/StudentProfile'; 
+import StudentProfile from './pages/StudentProfile';
+import InstructorDashboard from './pages/InstructorDashboard';
 import CoursePreview from './pages/CoursePreview';
 import CheckoutPage from './pages/Checkout';
 
@@ -71,6 +72,11 @@ function App() {
           } />
 
           {/* --- INSTRUCTOR ROUTES (Role Required) --- */}
+          <Route path="/instructor/dashboard" element={
+            <ProtectedRoute roleRequired="instructor">
+              <InstructorDashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/instructor/create-course" element={
             <ProtectedRoute roleRequired="instructor">
               <CreateCourse />

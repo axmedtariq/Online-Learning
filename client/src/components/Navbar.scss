@@ -1,0 +1,158 @@
+.ud-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 2rem;
+    height: 72px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    gap: 1.5rem;
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1c1d1f;
+            cursor: pointer;
+            letter-spacing: -1px;
+        }
+
+        .categories-btn {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            color: #1c1d1f;
+            cursor: pointer;
+
+            &:hover {
+                color: #5624d0;
+            }
+        }
+    }
+
+    .nav-center {
+        flex: 1;
+        max-width: 600px;
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #f7f9fa;
+            border: 1px solid #1c1d1f;
+            border-radius: 999px;
+            padding: 0 1rem;
+            height: 48px;
+
+            .search-icon {
+                color: #6a6f73;
+                font-size: 1.2rem;
+            }
+
+            input {
+                background: none;
+                border: none;
+                flex: 1;
+                height: 100%;
+                padding: 0 0.75rem;
+                font-size: 0.9rem;
+                outline: none;
+                color: #1c1d1f;
+            }
+        }
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .nav-link {
+            text-decoration: none;
+            color: #1c1d1f;
+            font-size: 0.9rem;
+
+            &:hover {
+                color: #5624d0;
+            }
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+
+            .icon-btn {
+                background: none;
+                border: none;
+                font-size: 1.4rem;
+                cursor: pointer;
+                color: #1c1d1f;
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+
+                &:hover {
+                    background: #f7f9fa;
+                }
+            }
+
+            .profile-thumb {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                cursor: pointer;
+                border: 1px solid #d1d7dc;
+            }
+        }
+
+        .auth-btns {
+            display: flex;
+            gap: 0.5rem;
+
+            button {
+                padding: 0.5rem 1rem;
+                font-weight: 700;
+                font-size: 0.9rem;
+                cursor: pointer;
+                border: 1px solid #1c1d1f;
+            }
+
+            .btn-login {
+                background: #fff;
+                color: #1c1d1f;
+
+                &:hover {
+                    background: #f7f9fa;
+                }
+            }
+
+            .btn-signup {
+                background: #1c1d1f;
+                color: #fff;
+
+                &:hover {
+                    background: #000;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none;
+    }
+
+    .nav-center {
+        display: none;
+    }
+}

@@ -2,29 +2,50 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
+  labels:
+    app: backend
+    version: v1
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: backend  # This MUST match the labels below
+      app: backend
   template:
     metadata:
+      annotations:
+        # Istio sidecar injection
+        sidecar.istio.io/inject: "true"
+        # Vault Agent Injector annotations
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "learning-app-role"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/learning-app"
+        # This template maps Vault secrets to Environment Variables for the app
+        vault.hashicorp.com/agent-inject-template-config: |
+          {{ `{{- with secret "secret/data/learning-app" -}}
+          {{- range $k, $v := .Data.data }}
+          export {{ $k }}="{{ $v }}"
+          {{- end }}
+          {{- end }}` }}
       labels:
         app: backend
+        version: v1
     spec:
       containers:
       - name: backend
-        image: your-docker-image-name  # Change this to your image
+        image: {{ .Values.images.backend }}
         ports:
-        - containerPort: 5000
+        - containerPort: {{ .Values.backend.port }}
+        command: ["/bin/sh", "-c"]
+        args: ["source /vault/secrets/config && node index.js"]
         env:
-        - name: MONGO_URI
-          value: "mongodb://mongodb-service:27017/Learning"
-        - name: JWT_SECRET
-          value: {{ .Values.secrets.jwtSecret | quote }}
-        - name: EMAIL_USER
-          value: {{ .Values.secrets.emailUser | quote }}
-        - name: EMAIL_PASS
-          value: {{ .Values.secrets.emailPass | quote }}
-        - name: STRIPE_SECRET_KEY
-          value: {{ .Values.secrets.stripeKey | quote }}
+        - name: VAULT_ADDR
+          value: {{ .Values.vault.address | quote }}
+        - name: VAULT_TOKEN
+          value: {{ .Values.vault.token | quote }}
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"

@@ -1,0 +1,43 @@
+{{- if .Values.istio.enabled -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.istio.gatewayName }}
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - {{ .Values.istio.host | quote }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: learning-app-routes
+spec:
+  hosts:
+  - {{ .Values.istio.host | quote }}
+  gateways:
+  - {{ .Values.istio.gatewayName }}
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: {{ .Values.backend.serviceName }}
+        port:
+          number: {{ .Values.backend.port }}
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ .Values.frontend.serviceName }}
+        port:
+          number: {{ .Values.frontend.port }}
+{{- end }}

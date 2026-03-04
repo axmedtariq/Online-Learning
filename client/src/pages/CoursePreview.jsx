@@ -36,8 +36,8 @@ const CoursePreview = () => {
             <h1>{course.title}</h1>
             <p className="subtitle">{course.description}</p>
             <div className="banner-meta">
-              <span><HiStar className="star" /> {course.rating || '4.5'} ({course.numReviews || '0'} reviews)</span>
-              <span>Created by: <strong>{course.instructorName}</strong></span>
+              <span><HiStar className="star" /> {course.averageRating.toFixed(1)} ({course.numReviews} reviews)</span>
+              <span>Created by: <strong>{course.instructor?.username}</strong></span>
             </div>
           </div>
 
@@ -49,8 +49,8 @@ const CoursePreview = () => {
             <div className="card-body">
               <p className="price">${course.price}</p>
               {/* --- CONNECTING TO ENDPOINT: Navigate to Checkout --- */}
-              <button 
-                className="btn-enroll" 
+              <button
+                className="btn-enroll"
                 onClick={() => navigate(`/checkout/${courseId}`)}
               >
                 Enroll Now
@@ -60,17 +60,40 @@ const CoursePreview = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="curriculum-section">
         <h2>Course Modules</h2>
         <div className="module-list">
-          {course.modules?.map((mod, i) => (
+          {course.lessons?.map((lesson, i) => (
             <div key={i} className="module-item">
-              <span>{mod.title}</span>
+              <span>{lesson.title}</span>
               <HiOutlineLockClosed className="lock-icon" />
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="reviews-section">
+        <h2>Student Reviews</h2>
+        {course.reviews?.length > 0 ? (
+          <div className="review-grid">
+            {course.reviews.map((review, i) => (
+              <div key={i} className="review-card">
+                <div className="review-header">
+                  <strong>{review.name}</strong>
+                  <div className="review-rating">
+                    {[...Array(5)].map((_, idx) => (
+                      <HiStar key={idx} className={idx < review.rating ? "star active" : "star"} />
+                    ))}
+                  </div>
+                </div>
+                <p>{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No reviews yet. Be the first to review this course!</p>
+        )}
       </div>
     </div>
   );

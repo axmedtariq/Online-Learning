@@ -4,6 +4,9 @@ pipeline {
     environment {
         NODE_ENV = 'production'
         CI = 'false'
+        DOCKER_IMAGE_BACKEND = 'learning-server:latest'
+        DOCKER_IMAGE_FRONTEND = 'learning-client:latest'
+        SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
     }
 
     tools {
@@ -11,7 +14,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 echo '📥 Checking out repository'
@@ -19,67 +21,85 @@ pipeline {
             }
         }
 
-        stage('Install Client Dependencies') {
-            steps {
-                dir('client') {
-                    echo '📦 Installing client dependencies'
-                    bat 'npm install'
+        stage('Install Dependencies') {
+            parallel {
+                stage('Client Deps') {
+                    steps {
+                        dir('client') { bat 'npm install' }
+                    }
+                }
+                stage('Server Deps') {
+                    steps {
+                        dir('Server') { bat 'npm install' }
+                    }
                 }
             }
         }
 
-        stage('Install Server Dependencies') {
+        stage('SonarQube Analysis') {
             steps {
-                dir('Server') {
-                    echo '📦 Installing server dependencies'
-                    bat 'npm install'
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQube') {
+                        bat "${scannerHome}/bin/sonar-scanner.bat \
+                        -Dsonar.projectKey=learning-platform \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=node_modules/**,**/dist/**"
+                    }
                 }
             }
         }
 
-        stage('Build Client') {
+        stage('Vulnerability Scan (FS)') {
             steps {
-                dir('client') {
-                    echo '🚀 Building React client'
-                    bat 'set CI=false && npm run build'
+                echo '🔍 Static vulnerability scan with Trivy'
+                // Scan the filesystem for vulnerable packages/configurations
+                bat 'trivy fs --severity HIGH,CRITICAL --format table .'
+            }
+        }
+
+        stage('Build & Test') {
+            parallel {
+                stage('Client') {
+                    steps {
+                        dir('client') {
+                            bat 'set CI=false && npm run build'
+                            bat 'npm test || exit /b 0'
+                        }
+                    }
+                }
+                stage('Server') {
+                    steps {
+                        dir('Server') {
+                            bat 'npm test || exit /b 0'
+                        }
+                    }
                 }
             }
         }
 
-        stage('Build Server (Optional)') {
+        stage('Docker Image Build') {
             steps {
-                dir('Server') {
-                    echo '🏗️ Checking if server build exists'
-
-                    bat '''
-                    npm run | findstr /C:"build" >nul
-                    if %ERRORLEVEL% NEQ 0 (
-                        echo No server build script found. Skipping...
-                        exit /b 0
-                    )
-
-                    echo Server build script found. Running build...
-                    npm run build
-                    '''
-                }
+                echo '🏗️ Building Docker Images'
+                bat "docker build -t ${DOCKER_IMAGE_BACKEND} ./Server"
+                bat "docker build -t ${DOCKER_IMAGE_FRONTEND} ./client"
             }
         }
 
-        stage('Test Client') {
+        stage('Trivy Image Scan') {
             steps {
-                dir('client') {
-                    echo '🧪 Running client tests'
-                    bat 'npm test || exit /b 0'
-                }
+                echo '🧹 Scanning Docker Images for vulnerabilities'
+                bat "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}"
+                bat "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}"
             }
         }
 
-        stage('Test Server') {
+        stage('OWASP ZAP (DAST)') {
             steps {
-                dir('Server') {
-                    echo '🧪 Running server tests'
-                    bat 'npm test || exit /b 0'
-                }
+                echo '🛡️ Dynamic Security Scan (OWASP ZAP)'
+                // Run OWASP ZAP in a docker container to scan the local instance (assuming it's up)
+                // In a real CI/CD, you would deploy to a dev env first
+                bat 'docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000'
             }
         }
     }
@@ -89,13 +109,13 @@ pipeline {
             echo '🧹 Cleaning workspace'
             cleanWs()
         }
-
-        success {
-            echo '✅ Pipeline completed successfully'
+        success { 
+            echo '✅ DevSecOps Pipeline completed successfully' 
+            slackSend color: 'good', message: "SUCCESS: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}] completed successfully. (${env.BUILD_URL})"
         }
-
-        failure {
-            echo '❌ Pipeline failed'
+        failure { 
+            echo '❌ Pipeline failed security or build checks' 
+            slackSend color: 'danger', message: "FAILED: Pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}] failed. Check logs at: ${env.BUILD_URL}"
         }
     }
 }

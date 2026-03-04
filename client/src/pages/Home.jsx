@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from '../components/Navbar';
 import '../styles/Home.scss';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -31,60 +32,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* --- NAVBAR --- */}
-      <nav className="navbar">
-        <div
-          className="logo"
-          onClick={() => navigate('/')}
-          style={{ cursor: 'pointer' }}
-        >
-          E-LEARN
-        </div>
-
-        <div className="nav-links">
-          <Link to="/">Courses</Link>
-          <button
-            type="button"
-            className="link-button"
-            onClick={() => navigate('/instructors')}
-          >
-            Instructors
-          </button>
-          <button
-            type="button"
-            className="link-button"
-            onClick={() => navigate('/resources')}
-          >
-            Resources
-          </button>
-        </div>
-
-        <div className="auth-buttons">
-          {token ? (
-            <button
-              className="btn-signup"
-              onClick={() => navigate('/profile')}
-            >
-              My Profile
-            </button>
-          ) : (
-            <>
-              <button
-                className="btn-login"
-                onClick={() => navigate('/login')}
-              >
-                Log In
-              </button>
-              <button
-                className="btn-signup"
-                onClick={() => navigate('/signup')}
-              >
-                Sign Up
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* --- HERO SECTION --- */}
       <header className="hero">
