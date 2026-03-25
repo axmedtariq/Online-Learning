@@ -6,6 +6,18 @@ scrape_configs:
     static_configs:
       - targets: ['server:5000']
 
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:5001']
+
+  - job_name: 'curriculum-service'
+    static_configs:
+      - targets: ['curriculum-service:5002']
+
+  - job_name: 'transaction-service'
+    static_configs:
+      - targets: ['transaction-service:5003']
+
   - job_name: 'host-metrics'
     static_configs:
       - targets: ['node-exporter:9100']

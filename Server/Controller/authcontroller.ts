@@ -1,18 +1,20 @@
-const { User, Course } = require('../models');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import { Request, Response, NextFunction } from 'express';
+// @ts-ignore
+import { User, Course } from '../models';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 // Helper to generate JWT
-const generateToken = (user) => {
+const generateToken = (user: any) => {
     return jwt.sign(
         { id: user.id, role: user.role },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET as string,
         { expiresIn: '24h' }
     );
 };
 
 // --- SIGNUP LOGIC ---
-exports.signup = async (req, res, next) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { username, email, password, role } = req.body;
 
@@ -33,7 +35,7 @@ exports.signup = async (req, res, next) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         // Create new user
-        const newUser = await User.create({
+        const newUser: any = await User.create({
             username,
             email,
             password: hashedPassword,
@@ -60,14 +62,14 @@ exports.signup = async (req, res, next) => {
 };
 
 // --- LOGIN LOGIC ---
-exports.login = async (req, res, next) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
 
         if (!email || !password)
             return res.status(400).json({ message: "Email and password are required" });
 
-        const user = await User.findOne({ where: { email } });
+        const user: any = await User.findOne({ where: { email } });
         if (!user)
             return res.status(404).json({ message: "User not found" });
 
@@ -93,9 +95,10 @@ exports.login = async (req, res, next) => {
 };
 
 // --- GET PROFILE LOGIC ---
-exports.getProfile = async (req, res, next) => {
+export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await User.findByPk(req.user.id, {
+        // @ts-ignore
+        const user: any = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] },
             include: [{ model: Course, as: 'enrolledCourses' }]
         });

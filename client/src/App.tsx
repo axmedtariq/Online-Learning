@@ -16,15 +16,17 @@ import StudentProfile from './pages/StudentProfile';
 import InstructorDashboard from './pages/InstructorDashboard';
 import CoursePreview from './pages/CoursePreview';
 import CheckoutPage from './pages/Checkout';
+import CourseListing from './pages/CourseListing';
 
 // Initialize Stripe with your Public Key
-const stripePromise = loadStripe('pk_test_your_public_key_here');
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY || 'pk_test_your_public_key_here');
 
 // --- 🛡️ PROTECTED ROUTE COMPONENT ---
 // This prevents unauthorized access (OWASP: Broken Access Control)
-const ProtectedRoute = ({ children, roleRequired }) => {
+const ProtectedRoute = ({ children, roleRequired }: { children: React.ReactNode; roleRequired?: string }): React.ReactElement => {
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user'));
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
 
   if (!token) {
     return <Navigate to="/login" />;
@@ -34,7 +36,7 @@ const ProtectedRoute = ({ children, roleRequired }) => {
     return <Navigate to="/" />; // Redirect if role doesn't match
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 function App() {
@@ -49,6 +51,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
           <Route path="/course/:courseId" element={<CoursePreview />} />
+          <Route path="/courses" element={<CourseListing />} />
 
           {/* --- SECURE CHECKOUT (Wrapped in Stripe Elements) --- */}
           <Route path="/checkout/:courseId" element={

@@ -1,14 +1,17 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const hpp = require('hpp');
-const xss = require('xss-clean');
-require('dotenv').config({ path: '../.env' });
-const { loadVaultSecrets } = require('./config/vault');
-const { sanitizeInput } = require('./utils/security');
-const logger = require('./utils/logger');
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import hpp from 'hpp';
+// @ts-ignore
+import xss from 'xss-clean';
+import dotenv from 'dotenv';
+import { loadVaultSecrets } from './config/vault';
+import { sanitizeInput } from './utils/security';
+import logger from './utils/logger';
+
+dotenv.config({ path: '../.env' });
 
 const app = express();
 
@@ -16,10 +19,10 @@ const app = express();
 app.use(helmet());
 
 // Logging: Combined Morgan into Winston (Elasticsearch Ready)
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(morgan('combined', { stream: { write: (message: string) => logger.info(message.trim()) } }));
 
 // 2. Global Input Sanitization Middleware
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     if (req.body) {
         req.body = sanitizeInput(req.body);
     }
@@ -44,11 +47,13 @@ app.use(express.json({ limit: '10kb' }));
 app.use(cors());
 
 // Monitoring & Metrics
+// @ts-ignore
 const { metricsMiddleware, getMetrics } = require('./middleware/monitoring');
 app.use(metricsMiddleware);
 app.get('/metrics', getMetrics);
 
 // Special middleware for webhook (raw body needed)
+// @ts-ignore
 const paymentWebhook = require('./Routes/payementRoute');
 app.use('/api/payment/webhook', express.raw({ type: 'application/json' }), paymentWebhook);
 
@@ -58,10 +63,15 @@ const startServer = async () => {
         await loadVaultSecrets();
 
         // 2. Import routes and database (after secrets are loaded into process.env)
+        // @ts-ignore
         const { sequelize } = require('./models');
+        // @ts-ignore
         const authRoutes = require('./Routes/authRoute');
+        // @ts-ignore
         const adminRoutes = require('./Routes/adminRoute');
+        // @ts-ignore
         const courseRoutes = require('./Routes/courseRoute');
+        // @ts-ignore
         const paymentRoutes = require('./Routes/payment');
 
         // 3. Register Routes
@@ -71,7 +81,7 @@ const startServer = async () => {
         app.use('/api/payment', paymentRoutes);
 
         // --- GLOBAL SECURITY ERROR HANDLER ---
-        app.use((err, req, res, next) => {
+        app.use((err: any, req: Request, res: Response, next: NextFunction) => {
             err.statusCode = err.statusCode || 500;
             err.status = err.status || 'error';
 
@@ -95,7 +105,7 @@ const startServer = async () => {
         const PORT = process.env.PORT || 5000;
         await sequelize.sync({ alter: true });
 
-        console.log("✅ SQL Server Database synchronized.");
+        console.log("✅ PostgreSQL (Supabase) Database synchronized.");
         app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
     } catch (err) {

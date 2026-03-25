@@ -4,6 +4,20 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.scss';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
+interface LoginResponse {
+  token: string;
+  user: User;
+}
+
 const Login = () => {
   // 1. State for input fields
   const [email, setEmail] = useState('');
@@ -14,13 +28,14 @@ const Login = () => {
   const navigate = useNavigate();
 
   // 2. Handle Form Submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return; // Prevent multiple clicks (OWASP: Insecure Design)
     setLoading(true);
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post<LoginResponse>(`${API_URL}/api/auth/login`, {
         email,
         password
       });
@@ -35,11 +50,13 @@ const Login = () => {
         // Redirect based on role
         if (response.data.user.role === 'admin') {
           navigate('/admin-dashboard');
+        } else if (response.data.user.role === 'instructor') {
+          navigate('/instructor-dashboard');
         } else {
-          navigate('/dashboard');
+          navigate('/profile'); 
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       // Handle Errors (OWASP: Don't reveal too much detail about why it failed)
       setError(err.response?.data?.msg || "Login failed. Please check your credentials.");
     } finally {

@@ -12,7 +12,7 @@ const client = vault(vaultConfig);
  * Fetches secrets from Vault and puts them into process.env
  * Expects secrets at 'secret/data/learning-app' (Stardard KV v2 path)
  */
-const loadVaultSecrets = async () => {
+export const loadVaultSecrets = async () => {
     if (!process.env.VAULT_TOKEN) {
         console.warn("⚠️ VAULT_TOKEN not found. Skipping Vault secret injection.");
         return;
@@ -32,7 +32,7 @@ const loadVaultSecrets = async () => {
             });
             console.log("🚀 All secrets successfully synced from HashiCorp Vault.");
         }
-    } catch (err) {
+    } catch (err: any) {
         console.error("❌ Failed to fetch secrets from Vault:", err.message);
         throw err; // Stop app if secrets are missing
     }

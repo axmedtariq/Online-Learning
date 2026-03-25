@@ -1,11 +1,18 @@
-const sequelize = require('../config/database');
-const User = require('./user');
-const Course = require('./course');
-const Lesson = require('./lesson');
-const Review = require('./review');
-const Quiz = require('./quiz');
-const Question = require('./question');
-const Progress = require('./progressbar');
+import sequelize from '../config/database';
+// @ts-ignore
+import User from './user';
+// @ts-ignore
+import Course from './course';
+// @ts-ignore
+import Lesson from './lesson';
+// @ts-ignore
+import Review from './review';
+// @ts-ignore
+import Quiz from './quiz';
+// @ts-ignore
+import Question from './question';
+// @ts-ignore
+import Progress from './progressbar';
 
 // --- ASSOCIATIONS ---
 
@@ -47,7 +54,7 @@ Progress.belongsTo(Course, { foreignKey: 'courseId' });
 Lesson.hasMany(Progress, { foreignKey: 'lessonId' });
 Progress.belongsTo(Lesson, { foreignKey: 'lessonId' });
 
-module.exports = {
+export {
     sequelize,
     User,
     Course,

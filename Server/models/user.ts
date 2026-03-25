@@ -1,7 +1,20 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { DataTypes, Model, Optional } from 'sequelize';
+import sequelize from '../config/database';
 
-const User = sequelize.define('User', {
+interface UserAttributes {
+    id: string;
+    username: string;
+    email: string;
+    password?: string;
+    role: 'student' | 'instructor' | 'admin';
+    isApproved: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isApproved'> { }
+
+const User = sequelize.define<Model<UserAttributes, UserCreationAttributes>>('User', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -35,4 +48,4 @@ const User = sequelize.define('User', {
     timestamps: true
 });
 
-module.exports = User;
+export default User;

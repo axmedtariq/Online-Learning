@@ -1,0 +1,91 @@
+﻿src/components/QuizComponent.tsx(5,26): error TS7031: Binding element 'courseId' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(20,28): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<never[]>'.
+src/components/QuizComponent.tsx(30,27): error TS7006: Parameter 'questionIndex' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(30,42): error TS7006: Parameter 'answerIndex' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(37,14): error TS2339: Property 'questions' does not exist on type 'never'.
+src/components/QuizComponent.tsx(37,33): error TS7006: Parameter 'q' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(37,36): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(38,17): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/QuizComponent.tsx(42,49): error TS2339: Property 'questions' does not exist on type 'never'.
+src/components/QuizComponent.tsx(57,27): error TS2339: Property 'questions' does not exist on type 'never'.
+src/components/QuizComponent.tsx(57,42): error TS7006: Parameter 'q' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(57,45): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(61,49): error TS7006: Parameter 'opt' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(61,54): error TS7006: Parameter 'optIdx' implicitly has an 'any' type.
+src/components/QuizComponent.tsx(66,54): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/components/QuizComponent.tsx(81,91): error TS2339: Property 'passingScore' does not exist on type 'never'.
+src/components/QuizComponent.tsx(86,40): error TS2339: Property 'passingScore' does not exist on type 'never'.
+src/components/ReviewForm.tsx(6,23): error TS7031: Binding element 'courseId' implicitly has an 'any' type.
+src/components/ReviewForm.tsx(6,33): error TS7031: Binding element 'onReviewSuccess' implicitly has an 'any' type.
+src/components/ReviewForm.tsx(13,33): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/ReviewForm.tsx(32,22): error TS18046: 'err' is of type 'unknown'.
+src/components/ReviewForm.tsx(64,21): error TS2322: Type 'string' is not assignable to type 'number'.
+src/index.tsx(19,1): error TS2554: Expected 1 arguments, but got 0.
+src/pages/AdminPanel.tsx(27,26): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<any[]>'.
+src/pages/Checkout.tsx(19,27): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<null>'.
+src/pages/Checkout.tsx(27,33): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/pages/Checkout.tsx(34,29): error TS2339: Property 'clientSecret' does not exist on type 'unknown'.
+src/pages/Checkout.tsx(35,32): error TS2339: Property 'price' does not exist on type 'never'.
+src/pages/Checkout.tsx(43,21): error TS2322: Type 'StripeCardElement | null' is not assignable to type 'StripeCardElement | StripeCardNumberElement | { token: string; }'.
+  Type 'null' is not assignable to type 'StripeCardElement | StripeCardNumberElement | { token: string; }'.
+src/pages/Checkout.tsx(70,42): error TS2339: Property 'thumbnail' does not exist on type 'never'.
+src/pages/Checkout.tsx(70,65): error TS2339: Property 'title' does not exist on type 'never'.
+src/pages/Checkout.tsx(72,41): error TS2339: Property 'title' does not exist on type 'never'.
+src/pages/Checkout.tsx(73,71): error TS2339: Property 'price' does not exist on type 'never'.
+src/pages/Checkout.tsx(96,85): error TS2339: Property 'price' does not exist on type 'never'.
+src/pages/CourseListing.tsx(25,28): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<any[]>'.
+src/pages/CreateCourse.tsx(12,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/CreateCourse.tsx(45,13): error TS18046: 'err' is of type 'unknown'.
+src/pages/CreateCourse.tsx(70,15): error TS2322: Type 'string' is not assignable to type 'number'.
+src/pages/CreateCourse.tsx(93,47): error TS18047: 'e.target.files' is possibly 'null'.
+src/pages/CreateCourse.tsx(93,47): error TS2345: Argument of type 'File' is not assignable to parameter of type 'SetStateAction<null>'.
+  Type 'File' provides no match for the signature '(prevState: null): null'.
+src/pages/ForgetPassword.tsx(12,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/ForgetPassword.tsx(28,16): error TS18046: 'err' is of type 'unknown'.
+src/pages/Home.tsx(18,28): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<any[]>'.
+src/pages/InstructorDashboard.tsx(24,28): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<any[]>'.
+src/pages/InstructorDashboard.tsx(26,39): error TS18046: 'data' is of type 'unknown'.
+src/pages/InstructorDashboard.tsx(27,37): error TS18046: 'data' is of type 'unknown'.
+src/pages/InstructorDashboard.tsx(28,35): error TS18046: 'data' is of type 'unknown'.
+src/pages/InstructorDashboard.tsx(28,67): error TS18046: 'data' is of type 'unknown'.
+src/pages/Login.tsx(17,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/Login.tsx(29,11): error TS18046: 'response.data' is of type 'unknown'.
+src/pages/Login.tsx(30,39): error TS18046: 'response.data' is of type 'unknown'.
+src/pages/Login.tsx(31,53): error TS18046: 'response.data' is of type 'unknown'.
+src/pages/Login.tsx(36,13): error TS18046: 'response.data' is of type 'unknown'.
+src/pages/Login.tsx(44,16): error TS18046: 'err' is of type 'unknown'.
+src/pages/ResetPassword.tsx(17,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/ResetPassword.tsx(44,16): error TS18046: 'err' is of type 'unknown'.
+src/pages/SignUp.tsx(28,17): error TS2339: Property 'username' does not exist on type '{}'.
+src/pages/SignUp.tsx(32,17): error TS2339: Property 'email' does not exist on type '{}'.
+src/pages/SignUp.tsx(36,17): error TS2339: Property 'password' does not exist on type '{}'.
+src/pages/SignUp.tsx(44,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/pages/SignUp.tsx(59,9): error TS18046: 'error' is of type 'unknown'.
+src/pages/SignUp.tsx(95,33): error TS2339: Property 'username' does not exist on type '{}'.
+src/pages/SignUp.tsx(101,21): error TS2339: Property 'username' does not exist on type '{}'.
+src/pages/SignUp.tsx(102,52): error TS2339: Property 'username' does not exist on type '{}'.
+src/pages/SignUp.tsx(112,33): error TS2339: Property 'email' does not exist on type '{}'.
+src/pages/SignUp.tsx(118,21): error TS2339: Property 'email' does not exist on type '{}'.
+src/pages/SignUp.tsx(119,52): error TS2339: Property 'email' does not exist on type '{}'.
+src/pages/SignUp.tsx(129,33): error TS2339: Property 'password' does not exist on type '{}'.
+src/pages/SignUp.tsx(135,21): error TS2339: Property 'password' does not exist on type '{}'.
+src/pages/SignUp.tsx(136,52): error TS2339: Property 'password' does not exist on type '{}'.
+src/pages/WatchCourse.tsx(24,17): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<null>'.
+src/pages/WatchCourse.tsx(38,26): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(45,48): error TS2339: Property 'title' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(47,82): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(53,25): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(58,33): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(63,124): error TS2339: Property 'numQuizzes' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(70,29): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(71,28): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(86,21): error TS2339: Property 'lessons' does not exist on type 'never'.
+src/pages/WatchCourse.tsx(86,34): error TS7006: Parameter 'lesson' implicitly has an 'any' type.
+src/pages/WatchCourse.tsx(86,42): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/reportWebVitals.tsx(1,25): error TS7006: Parameter 'onPerfEntry' implicitly has an 'any' type.
+src/services/authservices.tsx(7,36): error TS7006: Parameter 'userData' implicitly has an 'any' type.
+src/services/authservices.tsx(12,33): error TS7006: Parameter 'userData' implicitly has an 'any' type.
+src/services/authservices.tsx(17,38): error TS7006: Parameter 'email' implicitly has an 'any' type.
+src/services/authservices.tsx(22,38): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/services/authservices.tsx(22,42): error TS7006: Parameter 'token' implicitly has an 'any' type.
+src/services/authservices.tsx(22,49): error TS7006: Parameter 'password' implicitly has an 'any' type.
