@@ -22,6 +22,7 @@ yarn.lock
 # Kubernetes/Helm Secrets
 helm-chart/values-secrets.yaml
 pass.txt
+ACCESS_VAULT.txt
 # Any other file containing "secrets"
 *secrets.yaml
 secrets/

@@ -1,0 +1,13 @@
+node_modules
+build
+dist
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+Dockerfile
+Jenkinsfile
+.dockerignore
+.vscode
+*.log

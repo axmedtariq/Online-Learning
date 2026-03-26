@@ -19,7 +19,10 @@ export const sanitizeInput = (data: any): any => {
     if (typeof data === 'object' && data !== null) {
         const sanitizedObj: Record<string, any> = {};
         for (const key in data) {
-            sanitizedObj[key] = sanitizeInput(data[key]);
+            // SECURITY FIX: Prevent Prototype Pollution
+            if (Object.prototype.hasOwnProperty.call(data, key) && !['__proto__', 'constructor', 'prototype'].includes(key)) {
+                sanitizedObj[key] = sanitizeInput(data[key]);
+            }
         }
         return sanitizedObj;
     }

@@ -44,13 +44,24 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 app.use(express.json({ limit: '10kb' }));
-app.use(cors());
+// SECURITY: Restrict CORS to trusted origins only
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true
+}));
 
-// Monitoring & Metrics
+// Monitoring & Metrics (Securely Exposed)
 // @ts-ignore
 const { metricsMiddleware, getMetrics } = require('./middleware/monitoring');
 app.use(metricsMiddleware);
-app.get('/metrics', getMetrics);
+app.get('/metrics', (req, res, next) => {
+    // Only allow access if requester is from local network or has a secret key
+    const internalKey = req.headers['x-metrics-key'];
+    if (req.ip === '127.0.0.1' || internalKey === process.env.METRICS_KEY) {
+        return getMetrics(req, res);
+    }
+    res.status(403).json({ message: "Forbidden: Internal access only" });
+});
 
 // Special middleware for webhook (raw body needed)
 // @ts-ignore

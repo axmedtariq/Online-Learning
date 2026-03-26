@@ -34,12 +34,12 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // Create new user
+        // Create new user (ROLE ENFORCED: ALWAYS STUDENT)
         const newUser: any = await User.create({
             username,
             email,
             password: hashedPassword,
-            role: role || 'student'
+            role: 'student' // Security Hardening: Never trust role from body
         });
 
         // Generate token
@@ -70,12 +70,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             return res.status(400).json({ message: "Email and password are required" });
 
         const user: any = await User.findOne({ where: { email } });
-        if (!user)
-            return res.status(404).json({ message: "User not found" });
-
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        if (!isPasswordCorrect)
-            return res.status(400).json({ message: "Invalid credentials" });
+        // Security Fix: Unified Error Message (Prevents Username Enumeration)
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
 
         const token = generateToken(user);
 

@@ -2,39 +2,49 @@ const vault = require('node-vault');
 
 const vaultConfig = {
     apiVersion: 'v1',
-    endpoint: process.env.VAULT_ADDR || 'http://127.0.0.1:8200',
-    token: process.env.VAULT_TOKEN
+    endpoint: process.env.VAULT_ADDR || 'http://127.0.0.1:8200'
 };
 
 const client = vault(vaultConfig);
 
 /**
- * Fetches secrets from Vault and puts them into process.env
- * Expects secrets at 'secret/data/learning-app' (Stardard KV v2 path)
+ * Enterprise Grade Vault Authentication & Secret Injection
+ * Implements Userpass Auth Strategy for Zero-Trust consistency.
  */
 export const loadVaultSecrets = async () => {
-    if (!process.env.VAULT_TOKEN) {
-        console.warn("⚠️ VAULT_TOKEN not found. Skipping Vault secret injection.");
-        return;
-    }
+    const username = process.env.VAULT_USER || 'Ahmed';
+    const password = process.env.VAULT_PASS || 'Somali123@123!!';
 
     try {
-        console.log(`🔑 Connecting to Vault at ${vaultConfig.endpoint}...`);
+        console.log(`🔒 Authenticating with Vault at ${vaultConfig.endpoint} as user: ${username}...`);
 
-        // Standard KV v2 request
+        // 1. Authenticate with Userpass Method
+        const loginResponse = await client.userpassLogin({
+            username: username,
+            password: password
+        });
+
+        // 2. Set the token received from login for subsequent requests
+        client.token = loginResponse.auth.client_token;
+        console.log("✅ Vault Authentication Successful.");
+
+        // 3. Fetch secrets from 'secret/data/learning-app' (Stardard KV v2 path)
         const secret = await client.read('secret/data/learning-app');
         const data = secret.data.data;
 
         if (data) {
             Object.keys(data).forEach(key => {
                 process.env[key] = data[key];
-                // console.log(`✅ Loaded secret: ${key}`);
             });
-            console.log("🚀 All secrets successfully synced from HashiCorp Vault.");
+            console.log("🚀 All Enterprise Secrets successfully synced from HashiCorp Vault.");
         }
     } catch (err: any) {
-        console.error("❌ Failed to fetch secrets from Vault:", err.message);
-        throw err; // Stop app if secrets are missing
+        console.error("❌ Vault Enterprise Error:", err.message);
+        // Fallback or critical failure handling
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error("CRITICAL: Vault secrets could not be loaded. Stopping service.");
+        }
+        console.warn("⚠️ Continuing in development mode with local .env fallback.");
     }
 };
 

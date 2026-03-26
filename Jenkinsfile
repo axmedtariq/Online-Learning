@@ -25,12 +25,12 @@ pipeline {
             parallel {
                 stage('Client Deps') {
                     steps {
-                        dir('client') { bat 'npm install' }
+                        dir('client') { bat 'npm ci' }
                     }
                 }
                 stage('Server Deps') {
                     steps {
-                        dir('Server') { bat 'npm install' }
+                        dir('Server') { bat 'npm ci' }
                     }
                 }
             }
@@ -53,8 +53,8 @@ pipeline {
         stage('Vulnerability Scan (FS)') {
             steps {
                 echo '🔍 Static vulnerability scan with Trivy'
-                // Scan the filesystem for vulnerable packages/configurations
-                bat 'trivy fs --severity HIGH,CRITICAL --format table .'
+                // Scan the filesystem - FAIL if Critical
+                bat 'trivy fs --severity HIGH,CRITICAL --exit-code 1 .'
             }
         }
 
@@ -63,15 +63,15 @@ pipeline {
                 stage('Client') {
                     steps {
                         dir('client') {
-                            bat 'set CI=false && npm run build'
-                            bat 'npm test || exit /b 0'
+                            bat 'set CI=true && npm run build'
+                            bat 'npm test' // REMOVED: || exit /b 0 - SECURITY FIRST
                         }
                     }
                 }
                 stage('Server') {
                     steps {
                         dir('Server') {
-                            bat 'npm test || exit /b 0'
+                            bat 'npm test' // REMOVED: || exit /b 0
                         }
                     }
                 }
@@ -89,8 +89,8 @@ pipeline {
         stage('Trivy Image Scan') {
             steps {
                 echo '🧹 Scanning Docker Images for vulnerabilities'
-                bat "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE_BACKEND}"
-                bat "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE_FRONTEND}"
+                bat "trivy image --severity HIGH,CRITICAL --exit-code 1 ${DOCKER_IMAGE_BACKEND}"
+                bat "trivy image --severity HIGH,CRITICAL --exit-code 1 ${DOCKER_IMAGE_FRONTEND}"
             }
         }
 

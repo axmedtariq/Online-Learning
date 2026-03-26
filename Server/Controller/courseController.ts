@@ -189,8 +189,25 @@ exports.createQuiz = async (req, res) => {
 
 exports.getCourseQuizzes = async (req, res) => {
   try {
+    const courseId = req.params.courseId;
+    const course = await Course.findByPk(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    // --- SECURITY LOCK: Verify Enrollment, Ownership, or Admin ---
+    const user = await User.findByPk(req.user.id, {
+      include: [{ model: Course, as: 'enrolledCourses', where: { id: courseId }, required: false }]
+    });
+
+    const isEnrolled = user.enrolledCourses && user.enrolledCourses.length > 0;
+    const isOwner = course.instructorId === user.id;
+    const isAdmin = user.role === 'admin';
+
+    if (!isEnrolled && !isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Access denied. Please enroll to view quizzes." });
+    }
+
     const quizzes = await Quiz.findAll({
-      where: { courseId: req.params.courseId },
+      where: { courseId },
       include: [{ model: Question, as: 'questions' }]
     });
     res.status(200).json(quizzes);
